@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `jdbc-elm`;
+USE `jdbc-elm`;
+
 CREATE TABLE IF NOT EXISTS admin (
     admin_id INT AUTO_INCREMENT comment '管理员ID',
     username VARCHAR(50) NOT NULL comment '管理员用户名',
