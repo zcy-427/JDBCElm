@@ -34,6 +34,11 @@ public class JdbcUtil {
         }
     }
 
+    /**
+     * 获取数据库连接
+     * @return
+     * @throws SQLException
+     */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
