@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class food {
+public class Food {
     //菜品id
     private Integer foodId;
 
