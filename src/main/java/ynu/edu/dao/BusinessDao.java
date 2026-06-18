@@ -1,4 +1,4 @@
 package ynu.edu.dao;
 
-public class BusinessDao {
+public interface BusinessDao {
 }

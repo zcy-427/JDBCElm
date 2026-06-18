@@ -1,4 +1,5 @@
 package ynu.edu.dao;
 
-public class FoodDao {
+public interface FoodDao {
+
 }

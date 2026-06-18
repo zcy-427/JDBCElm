@@ -1,5 +1,7 @@
 package ynu.edu.service.Impl;
 
+import lombok.extern.slf4j.Slf4j;
+import ynu.edu.dao.AdminDao;
 import ynu.edu.entity.Business;
 import ynu.edu.service.AdminService;
 
@@ -7,6 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class AdminServiceImpl implements AdminService {
+
+    private AdminDao adminDao;
+
     /**
      * 管理员登录
      * @param username 管理员用户名
@@ -15,7 +20,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public boolean login(String username, String password) {
-        // TODO 后续接入 AdminDao 完成真实管理员登录校验
+        // TODO 后续接入 AdminDao 验证管理员账号密码
         return false;
     }
 
