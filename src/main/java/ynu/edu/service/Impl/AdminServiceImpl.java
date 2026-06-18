@@ -76,7 +76,65 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public boolean deleteBusiness(Integer businessId) {
-        // TODO 后续接入 BusinessDao/FoodDao，并在 Service 层完成事务删除
-        return false;
+        if (businessId == null || businessId <= 0) {
+            return false;
+        }
+
+        Connection connection = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            connection.setAutoCommit(false);
+
+            foodDao.deleteByBusinessId(connection, businessId);
+            int affectedRows = businessDao.deleteById(connection, businessId);
+
+            connection.commit();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            rollback(connection);
+            throw new RuntimeException("删除商家事务失败", e);
+        } finally {
+            close(connection);
+        }
+    }
+
+    /**
+     * 判断字符串是否为空
+     * @param value 字符串
+     * @return 是否为空
+     */
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    /**
+     * 回滚数据库事务
+     * @param connection 数据库连接
+     */
+    private void rollback(Connection connection) {
+        if (connection == null) {
+            return;
+        }
+        try {
+            connection.rollback();
+        } catch (Exception e) {
+            throw new RuntimeException("事务回滚失败", e);
+        }
+    }
+
+    /**
+     * 关闭数据库连接
+     * @param connection 数据库连接
+     */
+    private void close(Connection connection) {
+        if (connection == null) {
+            return;
+        }
+        try {
+            connection.setAutoCommit(true);
+            connection.close();
+        } catch (Exception e) {
+            throw new RuntimeException("数据库连接关闭失败", e);
+        }
     }
 }
