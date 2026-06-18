@@ -147,6 +147,29 @@ public class BusinessDaoImpl implements BusinessDao {
         }
 
         return null;
+    /**
+     * 修改商家信息
+     * @param business 商家信息
+     * @return 受影响行数
+     */
+    @Override
+    public int update(Business business) {
+        String sql = "update business set business_name = ?, business_address = ?, business_explain = ?, star_price = ?, delivery_price = ? "
+                + "where business_id = ?";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, business.getBusinessName());
+            preparedStatement.setString(2, business.getBusinessAddress());
+            preparedStatement.setString(3, business.getBusinessExplain());
+            preparedStatement.setBigDecimal(4, business.getStarPrice());
+            preparedStatement.setBigDecimal(5, business.getDeliveryPrice());
+            preparedStatement.setInt(6, business.getBusinessId());
+            return preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("修改商家信息失败", e);
+        }
+    }
     }
 
     /**

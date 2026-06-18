@@ -43,6 +43,13 @@ public interface BusinessDao {
     Integer insert(Business business);
 
     /**
+     * 修改商家信息
+     * @param business 商家信息
+     * @return 受影响行数
+     */
+    int update(Business business);
+
+    /**
      * 根据编号删除商家
      * @param connection 数据库连接
      * @param businessId 商家编号

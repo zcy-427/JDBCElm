@@ -42,8 +42,13 @@ public class BusinessServiceImpl implements BusinessService {
      */
     @Override
     public boolean updateBusiness(Business business) {
-        // TODO 后续接入 BusinessDao 修改商家信息
-        return false;
+        if (business == null || business.getBusinessId() == null || business.getBusinessId() <= 0) {
+            return false;
+        }
+        if (isBlank(business.getBusinessName()) || isBlank(business.getBusinessAddress())) {
+            return false;
+        }
+        return businessDao.update(business) > 0;
     }
 
     /**
