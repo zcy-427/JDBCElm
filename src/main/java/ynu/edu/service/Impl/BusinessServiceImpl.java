@@ -56,4 +56,13 @@ public class BusinessServiceImpl implements BusinessService {
         // TODO 后续接入 BusinessDao 校验旧密码并修改密码
         return false;
     }
+
+    /**
+     * 判断字符串是否为空
+     * @param value 字符串
+     * @return 是否为空
+     */
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
 }
