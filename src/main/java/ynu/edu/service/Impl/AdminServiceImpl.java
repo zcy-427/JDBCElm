@@ -39,8 +39,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public List<Business> listBusinesses() {
-        // TODO 后续接入 BusinessDao 查询所有商家
-        return Collections.emptyList();
+        return businessDao.findAll();
     }
 
     /**
