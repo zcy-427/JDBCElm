@@ -62,8 +62,13 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public Integer addBusiness(Business business) {
-        // TODO 后续接入 BusinessDao 新增商家并返回自增编号
-        return null;
+        if (business == null) {
+            return null;
+        }
+        if (isBlank(business.getPassword())) {
+            business.setPassword("123456");
+        }
+        return businessDao.insert(business);
     }
 
     /**

@@ -13,4 +13,10 @@ public interface BusinessDao {
      * @return 登录成功的商家信息
      */
     Business login(Integer businessId, String password);
+    /**
+     * 新增商家
+     * @param business 商家信息
+     * @return 新增商家的编号
+     */
+    Integer insert(Business business);
 }
