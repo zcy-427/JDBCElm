@@ -1,9 +1,13 @@
 package ynu.edu.service.Impl;
 
+import ynu.edu.dao.BusinessDao;
+import ynu.edu.dao.Impl.BusinessDaoImpl;
 import ynu.edu.entity.Business;
 import ynu.edu.service.BusinessService;
 
 public class BusinessServiceImpl implements BusinessService {
+    private final BusinessDao businessDao = new BusinessDaoImpl();
+
     /**
      * 商家登录
      * @param businessId 商家编号
@@ -12,8 +16,10 @@ public class BusinessServiceImpl implements BusinessService {
      */
     @Override
     public Business login(Integer businessId, String password) {
-        // TODO 后续接入 BusinessDao 完成真实商家登录校验
-        return null;
+        if (businessId == null || businessId <= 0 || isBlank(password)) {
+            return null;
+        }
+        return businessDao.login(businessId, password);
     }
 
     /**
