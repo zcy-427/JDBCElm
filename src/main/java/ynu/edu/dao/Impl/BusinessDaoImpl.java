@@ -41,6 +41,32 @@ public class BusinessDaoImpl implements BusinessDao {
     }
 
     /**
+     * 根据商家编号查询商家信息
+     * @param businessId 商家编号
+     * @return 商家信息
+     */
+    @Override
+    public Business findById(Integer businessId) {
+        String sql = "select business_id, password, business_name, business_address, business_explain, star_price, delivery_price "
+                + "from business where business_id = ?";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, businessId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return mapBusiness(resultSet);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("查询商家信息失败", e);
+        }
+
+        return null;
+    }
+
+    /**
      * 查询所有商家
      * @return 商家列表
      */

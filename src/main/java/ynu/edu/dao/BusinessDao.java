@@ -15,6 +15,13 @@ public interface BusinessDao {
     Business login(Integer businessId, String password);
 
     /**
+     * 根据商家编号查询商家信息
+     * @param businessId 商家编号
+     * @return 商家信息
+     */
+    Business findById(Integer businessId);
+
+    /**
      * 查询所有商家
      * @return 商家列表
      */

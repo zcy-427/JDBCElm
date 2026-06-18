@@ -29,8 +29,10 @@ public class BusinessServiceImpl implements BusinessService {
      */
     @Override
     public Business getBusinessById(Integer businessId) {
-        // TODO 后续接入 BusinessDao 按编号查询商家
-        return null;
+        if (businessId == null || businessId <= 0) {
+            return null;
+        }
+        return businessDao.findById(businessId);
     }
 
     /**
