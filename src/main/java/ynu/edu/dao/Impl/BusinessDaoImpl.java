@@ -39,6 +39,7 @@ public class BusinessDaoImpl implements BusinessDao {
 
         return null;
     }
+
     /**
      * 查询所有商家
      * @return 商家列表
@@ -59,6 +60,37 @@ public class BusinessDaoImpl implements BusinessDao {
             throw new RuntimeException("查询商家列表失败", e);
         }
     }
+
+    /**
+     * 按名称和地址关键词搜索商家
+     * @param nameKeyword 商家名称关键词
+     * @param addressKeyword 商家地址关键词
+     * @return 符合条件的商家列表
+     */
+    @Override
+    public List<Business> search(String nameKeyword, String addressKeyword) {
+        String sql = "select business_id, password, business_name, business_address, business_explain, star_price, delivery_price "
+                + "from business where business_name like ? and business_address like ? order by business_id";
+        String name = keywordOf(nameKeyword);
+        String address = keywordOf(addressKeyword);
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, address);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<Business> businesses = new ArrayList<>();
+                while (resultSet.next()) {
+                    businesses.add(mapBusiness(resultSet));
+                }
+                return businesses;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("搜索商家失败", e);
+        }
+    }
+
     /**
      * 新增商家
      * @param business 商家信息

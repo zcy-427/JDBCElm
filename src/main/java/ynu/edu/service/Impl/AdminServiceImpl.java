@@ -50,8 +50,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public List<Business> searchBusinesses(String nameKeyword, String addressKeyword) {
-        // TODO 后续接入 BusinessDao 按名称和地址模糊查询商家
-        return Collections.emptyList();
+        return businessDao.search(nameKeyword, addressKeyword);
     }
 
     /**

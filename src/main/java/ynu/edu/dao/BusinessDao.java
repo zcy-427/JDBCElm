@@ -13,11 +13,21 @@ public interface BusinessDao {
      * @return 登录成功的商家信息
      */
     Business login(Integer businessId, String password);
+
     /**
      * 查询所有商家
      * @return 商家列表
      */
     List<Business> findAll();
+
+    /**
+     * 按名称和地址关键词搜索商家
+     * @param nameKeyword 商家名称关键词
+     * @param addressKeyword 商家地址关键词
+     * @return 符合条件的商家列表
+     */
+    List<Business> search(String nameKeyword, String addressKeyword);
+
     /**
      * 新增商家
      * @param business 商家信息
