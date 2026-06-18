@@ -1,16 +1,23 @@
 package ynu.edu.service.Impl;
 
-import lombok.extern.slf4j.Slf4j;
 import ynu.edu.dao.AdminDao;
+import ynu.edu.dao.BusinessDao;
+import ynu.edu.dao.FoodDao;
+import ynu.edu.dao.Impl.AdminDaoImpl;
+import ynu.edu.dao.Impl.BusinessDaoImpl;
+import ynu.edu.dao.Impl.FoodDaoImpl;
 import ynu.edu.entity.Business;
 import ynu.edu.service.AdminService;
+import ynu.edu.util.JdbcUtil;
 
-import java.util.Collections;
+import java.sql.Connection;
 import java.util.List;
 
 public class AdminServiceImpl implements AdminService {
 
-    private AdminDao adminDao;
+    private final AdminDao adminDao = new AdminDaoImpl();
+    private final BusinessDao businessDao = new BusinessDaoImpl();
+    private final FoodDao foodDao = new FoodDaoImpl();
 
     /**
      * 管理员登录
@@ -20,8 +27,10 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public boolean login(String username, String password) {
-        // TODO 后续接入 AdminDao 验证管理员账号密码
-        return false;
+        if (isBlank(username) || isBlank(password)) {
+            return false;
+        }
+        return adminDao.existsByUsernameAndPassword(username, password);
     }
 
     /**
