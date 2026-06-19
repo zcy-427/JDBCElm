@@ -170,6 +170,27 @@ public class BusinessDaoImpl implements BusinessDao {
             throw new RuntimeException("修改商家信息失败", e);
         }
     }
+
+    /**
+     * 修改商家登录密码
+     * @param businessId 商家编号
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @return 受影响行数
+     */
+    @Override
+    public int updatePassword(Integer businessId, String oldPassword, String newPassword) {
+        String sql = "update business set password = ? where business_id = ? and password = ?";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, newPassword);
+            preparedStatement.setInt(2, businessId);
+            preparedStatement.setString(3, oldPassword);
+            return preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("修改商家密码失败", e);
+        }
     }
 
     /**

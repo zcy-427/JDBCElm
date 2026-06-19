@@ -60,8 +60,10 @@ public class BusinessServiceImpl implements BusinessService {
      */
     @Override
     public boolean updatePassword(Integer businessId, String oldPassword, String newPassword) {
-        // TODO 后续接入 BusinessDao 校验旧密码并修改密码
-        return false;
+        if (businessId == null || businessId <= 0 || isBlank(oldPassword) || isBlank(newPassword)) {
+            return false;
+        }
+        return businessDao.updatePassword(businessId, oldPassword, newPassword) > 0;
     }
 
     /**

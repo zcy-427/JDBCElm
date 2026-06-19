@@ -19,7 +19,7 @@ public class BusinessView {
 
         Business business = businessService.login(businessId, password);
         if (business == null) {
-            ConsolePrinter.printError("商家登录失败，编号密码错误或 Service 尚未实现。");
+            ConsolePrinter.printError("商家登录失败，编号或者密码错误。");
             ConsoleInput.pause();
             return;
         }
@@ -140,11 +140,17 @@ public class BusinessView {
             return;
         }
 
+        if (oldPassword.equals(newPassword)) {
+            ConsolePrinter.printError("新密码不能与旧密码相同。");
+            ConsoleInput.pause();
+            return;
+        }
+
         boolean success = businessService.updatePassword(businessId, oldPassword, newPassword);
         if (success) {
             ConsolePrinter.printMessage("密码修改成功，请牢记新密码。");
         } else {
-            ConsolePrinter.printError("密码修改失败，旧密码错误或 Service 尚未实现。");
+            ConsolePrinter.printError("密码修改失败");
         }
         ConsoleInput.pause();
     }

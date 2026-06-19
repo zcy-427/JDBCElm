@@ -50,6 +50,15 @@ public interface BusinessDao {
     int update(Business business);
 
     /**
+     * 修改商家登录密码
+     * @param businessId 商家编号
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @return 受影响行数
+     */
+    int updatePassword(Integer businessId, String oldPassword, String newPassword);
+
+    /**
      * 根据编号删除商家
      * @param connection 数据库连接
      * @param businessId 商家编号
