@@ -131,6 +131,14 @@ public class FoodView {
     private void deleteFood() {
         ConsolePrinter.printTitle("删除食品");
         int foodId = ConsoleInput.readPositiveInt("请输入要删除的食品编号：");
+        Food food = foodService.getFoodById(foodId, businessId);
+        if (food == null) {
+            ConsolePrinter.printError("该食品不存在，无法删除。");
+            ConsoleInput.pause();
+            return;
+        }
+
+        System.out.println("即将删除食品：" + valueOf(food.getFoodName()));
         boolean confirmed = ConsoleInput.readYesNo("确认删除该食品吗？删除后不可恢复（y/n）：");
         if (!confirmed) {
             ConsolePrinter.printMessage("已取消删除。");

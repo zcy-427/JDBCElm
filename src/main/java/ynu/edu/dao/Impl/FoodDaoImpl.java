@@ -119,6 +119,26 @@ public class FoodDaoImpl implements FoodDao {
     }
 
     /**
+     * 根据食品编号和商家编号删除食品
+     * @param foodId 食品编号
+     * @param businessId 商家编号
+     * @return 受影响行数
+     */
+    @Override
+    public int deleteByIdAndBusinessId(Integer foodId, Integer businessId) {
+        String sql = "delete from food where food_id = ? and business_id = ?";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, foodId);
+            preparedStatement.setInt(2, businessId);
+            return preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("删除食品失败", e);
+        }
+    }
+
+    /**
      * 根据商家编号删除食品
      * @param connection 数据库连接
      * @param businessId 商家编号

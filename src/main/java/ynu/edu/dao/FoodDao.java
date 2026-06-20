@@ -36,6 +36,14 @@ public interface FoodDao {
     int update(Food food);
 
     /**
+     * 根据食品编号和商家编号删除食品
+     * @param foodId 食品编号
+     * @param businessId 商家编号
+     * @return 受影响行数
+     */
+    int deleteByIdAndBusinessId(Integer foodId, Integer businessId);
+
+    /**
      * 根据商家编号删除食品
      * @param connection 数据库连接
      * @param businessId 商家编号

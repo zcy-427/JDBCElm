@@ -73,8 +73,10 @@ public class FoodServiceImpl implements FoodService {
      */
     @Override
     public boolean deleteFood(Integer foodId, Integer businessId) {
-        // TODO 后续接入 FoodDao 删除当前商家的指定食品
-        return false;
+        if (foodId == null || foodId <= 0 || businessId == null || businessId <= 0) {
+            return false;
+        }
+        return foodDao.deleteByIdAndBusinessId(foodId, businessId) > 0;
     }
 
     /**
