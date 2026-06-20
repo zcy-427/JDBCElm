@@ -69,9 +69,31 @@ public class FoodView {
      */
     private void addFood() {
         ConsolePrinter.printTitle("新增食品");
-        String foodName = ConsoleInput.readRequiredString("请输入食品名称：");
-        String foodExplain = ConsoleInput.readLine("请输入食品介绍：");
-        BigDecimal foodPrice = ConsoleInput.readBigDecimal("请输入食品价格：");
+        printCancelTip();
+
+        String foodName = ConsoleInput.readRequiredStringOrCancel("请输入食品名称：");
+        if (foodName == null) {
+            cancelOperation("新增食品");
+            return;
+        }
+
+        String foodExplain = ConsoleInput.readLineOrCancel("请输入食品介绍：");
+        if (foodExplain == null) {
+            cancelOperation("新增食品");
+            return;
+        }
+
+        BigDecimal foodPrice = ConsoleInput.readBigDecimalOrCancel("请输入食品价格：");
+        if (foodPrice == null) {
+            cancelOperation("新增食品");
+            return;
+        }
+
+        Boolean confirmed = ConsoleInput.readYesNoOrCancel("确认新增该食品吗？（y/n，q取消）：");
+        if (!Boolean.TRUE.equals(confirmed)) {
+            cancelOperation("新增食品");
+            return;
+        }
 
         Food food = new Food();
         food.setBusinessId(businessId);
@@ -93,27 +115,70 @@ public class FoodView {
      */
     private void updateFood() {
         ConsolePrinter.printTitle("修改食品");
-        int foodId = ConsoleInput.readPositiveInt("请输入要修改的食品编号：");
+        printCancelTip();
+
+        Integer foodId = ConsoleInput.readPositiveIntOrCancel("请输入要修改的食品编号：");
+        if (foodId == null) {
+            cancelOperation("修改食品");
+            return;
+        }
+
         Food food = foodService.getFoodById(foodId, businessId);
         if (food == null) {
-            ConsolePrinter.printError("未查询到该食品，或 Service 尚未实现。");
+            ConsolePrinter.printError("未查询到该食品，无法修改。");
             ConsoleInput.pause();
             return;
         }
 
         System.out.println("当前食品名称：" + valueOf(food.getFoodName()));
-        if (ConsoleInput.readYesNo("是否修改食品名称？（y/n）：")) {
-            food.setFoodName(ConsoleInput.readRequiredString("请输入新的食品名称："));
+        Boolean updateName = ConsoleInput.readYesNoOrCancel("是否修改食品名称？（y/n，q取消）：");
+        if (updateName == null) {
+            cancelOperation("修改食品");
+            return;
+        }
+        if (updateName) {
+            String foodName = ConsoleInput.readRequiredStringOrCancel("请输入新的食品名称：");
+            if (foodName == null) {
+                cancelOperation("修改食品");
+                return;
+            }
+            food.setFoodName(foodName);
         }
 
         System.out.println("当前食品介绍：" + valueOf(food.getFoodExplain()));
-        if (ConsoleInput.readYesNo("是否修改食品介绍？（y/n）：")) {
-            food.setFoodExplain(ConsoleInput.readLine("请输入新的食品介绍："));
+        Boolean updateExplain = ConsoleInput.readYesNoOrCancel("是否修改食品介绍？（y/n，q取消）：");
+        if (updateExplain == null) {
+            cancelOperation("修改食品");
+            return;
+        }
+        if (updateExplain) {
+            String foodExplain = ConsoleInput.readLineOrCancel("请输入新的食品介绍：");
+            if (foodExplain == null) {
+                cancelOperation("修改食品");
+                return;
+            }
+            food.setFoodExplain(foodExplain);
         }
 
         System.out.println("当前食品价格：" + valueOf(food.getFoodPrice()));
-        if (ConsoleInput.readYesNo("是否修改食品价格？（y/n）：")) {
-            food.setFoodPrice(ConsoleInput.readBigDecimal("请输入新的食品价格："));
+        Boolean updatePrice = ConsoleInput.readYesNoOrCancel("是否修改食品价格？（y/n，q取消）：");
+        if (updatePrice == null) {
+            cancelOperation("修改食品");
+            return;
+        }
+        if (updatePrice) {
+            BigDecimal foodPrice = ConsoleInput.readBigDecimalOrCancel("请输入新的食品价格：");
+            if (foodPrice == null) {
+                cancelOperation("修改食品");
+                return;
+            }
+            food.setFoodPrice(foodPrice);
+        }
+
+        Boolean confirmed = ConsoleInput.readYesNoOrCancel("确认保存修改吗？（y/n，q取消）：");
+        if (!Boolean.TRUE.equals(confirmed)) {
+            cancelOperation("修改食品");
+            return;
         }
 
         boolean success = foodService.updateFood(food);
@@ -130,7 +195,14 @@ public class FoodView {
      */
     private void deleteFood() {
         ConsolePrinter.printTitle("删除食品");
-        int foodId = ConsoleInput.readPositiveInt("请输入要删除的食品编号：");
+        printCancelTip();
+
+        Integer foodId = ConsoleInput.readPositiveIntOrCancel("请输入要删除的食品编号：");
+        if (foodId == null) {
+            cancelOperation("删除食品");
+            return;
+        }
+
         Food food = foodService.getFoodById(foodId, businessId);
         if (food == null) {
             ConsolePrinter.printError("该食品不存在，无法删除。");
@@ -139,10 +211,9 @@ public class FoodView {
         }
 
         System.out.println("即将删除食品：" + valueOf(food.getFoodName()));
-        boolean confirmed = ConsoleInput.readYesNo("确认删除该食品吗？删除后不可恢复（y/n）：");
-        if (!confirmed) {
-            ConsolePrinter.printMessage("已取消删除。");
-            ConsoleInput.pause();
+        Boolean confirmed = ConsoleInput.readYesNoOrCancel("确认删除该食品吗？删除后不可恢复（y/n，q取消）：");
+        if (!Boolean.TRUE.equals(confirmed)) {
+            cancelOperation("删除食品");
             return;
         }
 
@@ -152,6 +223,22 @@ public class FoodView {
         } else {
             ConsolePrinter.printError("食品删除失败，Service 尚未实现或数据不存在。");
         }
+        ConsoleInput.pause();
+    }
+
+    /**
+     * 打印取消操作提示
+     */
+    private void printCancelTip() {
+        System.out.println("提示：输入 q 可取消当前操作。");
+    }
+
+    /**
+     * 取消操作并暂停
+     * @param operation 操作名称
+     */
+    private void cancelOperation(String operation) {
+        ConsolePrinter.printMessage("已取消" + operation + "。");
         ConsoleInput.pause();
     }
 
