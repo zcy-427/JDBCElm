@@ -8,8 +8,36 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FoodDaoImpl implements FoodDao {
+    /**
+     * 根据商家编号查询食品列表
+     * @param businessId 商家编号
+     * @return 食品列表
+     */
+    @Override
+    public List<Food> findByBusinessId(Integer businessId) {
+        String sql = "select food_id, business_id, food_name, food_explain, food_price "
+                + "from food where business_id = ? order by food_id";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, businessId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<Food> foods = new ArrayList<>();
+                while (resultSet.next()) {
+                    foods.add(mapFood(resultSet));
+                }
+                return foods;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("查询食品列表失败", e);
+        }
+    }
+
     /**
      * 新增食品
      * @param food 食品信息
@@ -55,5 +83,20 @@ public class FoodDaoImpl implements FoodDao {
         } catch (Exception e) {
             throw new RuntimeException("删除商家食品失败", e);
         }
+    }
+
+    /**
+     * 将结果集映射为食品对象
+     * @param resultSet 查询结果集
+     * @return 食品对象
+     */
+    private Food mapFood(ResultSet resultSet) throws Exception {
+        Food food = new Food();
+        food.setFoodId(resultSet.getInt("food_id"));
+        food.setBusinessId(resultSet.getInt("business_id"));
+        food.setFoodName(resultSet.getString("food_name"));
+        food.setFoodExplain(resultSet.getString("food_explain"));
+        food.setFoodPrice(resultSet.getBigDecimal("food_price"));
+        return food;
     }
 }

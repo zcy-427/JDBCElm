@@ -19,8 +19,10 @@ public class FoodServiceImpl implements FoodService {
      */
     @Override
     public List<Food> listFoodsByBusinessId(Integer businessId) {
-        // TODO 后续接入 FoodDao 查询当前商家的食品列表
-        return Collections.emptyList();
+        if (businessId == null || businessId <= 0) {
+            return Collections.emptyList();
+        }
+        return foodDao.findByBusinessId(businessId);
     }
 
     /**
