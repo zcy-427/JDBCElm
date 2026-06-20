@@ -39,6 +39,34 @@ public class FoodDaoImpl implements FoodDao {
     }
 
     /**
+     * 根据食品编号和商家编号查询食品信息
+     * @param foodId 食品编号
+     * @param businessId 商家编号
+     * @return 食品信息
+     */
+    @Override
+    public Food findByIdAndBusinessId(Integer foodId, Integer businessId) {
+        String sql = "select food_id, business_id, food_name, food_explain, food_price "
+                + "from food where food_id = ? and business_id = ?";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, foodId);
+            preparedStatement.setInt(2, businessId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return mapFood(resultSet);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("查询食品信息失败", e);
+        }
+
+        return null;
+    }
+
+    /**
      * 新增食品
      * @param food 食品信息
      * @return 新增食品的编号
@@ -65,6 +93,29 @@ public class FoodDaoImpl implements FoodDao {
         }
 
         return null;
+    }
+
+    /**
+     * 修改食品信息
+     * @param food 食品信息
+     * @return 受影响行数
+     */
+    @Override
+    public int update(Food food) {
+        String sql = "update food set food_name = ?, food_explain = ?, food_price = ? "
+                + "where food_id = ? and business_id = ?";
+
+        try (Connection connection = JdbcUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, food.getFoodName());
+            preparedStatement.setString(2, food.getFoodExplain());
+            preparedStatement.setBigDecimal(3, food.getFoodPrice());
+            preparedStatement.setInt(4, food.getFoodId());
+            preparedStatement.setInt(5, food.getBusinessId());
+            return preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("修改食品信息失败", e);
+        }
     }
 
     /**

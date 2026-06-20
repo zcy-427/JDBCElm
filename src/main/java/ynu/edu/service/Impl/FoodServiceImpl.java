@@ -33,8 +33,10 @@ public class FoodServiceImpl implements FoodService {
      */
     @Override
     public Food getFoodById(Integer foodId, Integer businessId) {
-        // TODO 后续接入 FoodDao 按食品编号和商家编号查询食品
-        return null;
+        if (foodId == null || foodId <= 0 || businessId == null || businessId <= 0) {
+            return null;
+        }
+        return foodDao.findByIdAndBusinessId(foodId, businessId);
     }
 
     /**
@@ -57,8 +59,10 @@ public class FoodServiceImpl implements FoodService {
      */
     @Override
     public boolean updateFood(Food food) {
-        // TODO 后续接入 FoodDao 修改食品信息
-        return false;
+        if (!isValidFoodForUpdate(food)) {
+            return false;
+        }
+        return foodDao.update(food) > 0;
     }
 
     /**
@@ -79,10 +83,31 @@ public class FoodServiceImpl implements FoodService {
      * @return 是否合法
      */
     private boolean isValidFoodForAdd(Food food) {
-        if (food == null || food.getBusinessId() == null || food.getBusinessId() <= 0) {
+        if (!isValidFoodBase(food)) {
             return false;
         }
-        if (food.getFoodId() != null) {
+        return food.getFoodId() == null;
+    }
+
+    /**
+     * 校验修改食品信息
+     * @param food 食品信息
+     * @return 是否合法
+     */
+    private boolean isValidFoodForUpdate(Food food) {
+        if (!isValidFoodBase(food)) {
+            return false;
+        }
+        return food.getFoodId() != null && food.getFoodId() > 0;
+    }
+
+    /**
+     * 校验食品基础信息
+     * @param food 食品信息
+     * @return 是否合法
+     */
+    private boolean isValidFoodBase(Food food) {
+        if (food == null || food.getBusinessId() == null || food.getBusinessId() <= 0) {
             return false;
         }
         if (isBlank(food.getFoodName())) {

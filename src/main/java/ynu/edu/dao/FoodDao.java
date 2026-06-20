@@ -14,11 +14,26 @@ public interface FoodDao {
     List<Food> findByBusinessId(Integer businessId);
 
     /**
+     * 根据食品编号和商家编号查询食品信息
+     * @param foodId 食品编号
+     * @param businessId 商家编号
+     * @return 食品信息
+     */
+    Food findByIdAndBusinessId(Integer foodId, Integer businessId);
+
+    /**
      * 新增食品
      * @param food 食品信息
      * @return 新增食品的编号
      */
     Integer insert(Food food);
+
+    /**
+     * 修改食品信息
+     * @param food 食品信息
+     * @return 受影响行数
+     */
+    int update(Food food);
 
     /**
      * 根据商家编号删除食品
