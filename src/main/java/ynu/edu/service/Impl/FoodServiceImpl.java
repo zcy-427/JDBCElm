@@ -1,12 +1,17 @@
 package ynu.edu.service.Impl;
 
+import ynu.edu.dao.FoodDao;
+import ynu.edu.dao.Impl.FoodDaoImpl;
 import ynu.edu.entity.Food;
 import ynu.edu.service.FoodService;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
 public class FoodServiceImpl implements FoodService {
+    private final FoodDao foodDao = new FoodDaoImpl();
+
     /**
      * 查询指定商家的食品列表
      * @param businessId 商家编号
@@ -37,8 +42,10 @@ public class FoodServiceImpl implements FoodService {
      */
     @Override
     public Integer addFood(Food food) {
-        // TODO 后续接入 FoodDao 新增食品并返回自增编号
-        return null;
+        if (!isValidFoodForAdd(food)) {
+            return null;
+        }
+        return foodDao.insert(food);
     }
 
     /**
@@ -62,5 +69,32 @@ public class FoodServiceImpl implements FoodService {
     public boolean deleteFood(Integer foodId, Integer businessId) {
         // TODO 后续接入 FoodDao 删除当前商家的指定食品
         return false;
+    }
+
+    /**
+     * 校验新增食品信息
+     * @param food 食品信息
+     * @return 是否合法
+     */
+    private boolean isValidFoodForAdd(Food food) {
+        if (food == null || food.getBusinessId() == null || food.getBusinessId() <= 0) {
+            return false;
+        }
+        if (food.getFoodId() != null) {
+            return false;
+        }
+        if (isBlank(food.getFoodName())) {
+            return false;
+        }
+        return food.getFoodPrice() != null && food.getFoodPrice().compareTo(BigDecimal.ZERO) >= 0;
+    }
+
+    /**
+     * 判断字符串是否为空
+     * @param value 字符串
+     * @return 是否为空
+     */
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }
