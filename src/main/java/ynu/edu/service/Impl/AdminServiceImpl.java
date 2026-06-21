@@ -70,6 +70,19 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
+     * 根据商家编号查询商家信息
+     * @param businessId 商家编号
+     * @return 商家信息
+     */
+    @Override
+    public Business getBusinessById(Integer businessId) {
+        if (businessId == null || businessId <= 0) {
+            return null;
+        }
+        return businessDao.findById(businessId);
+    }
+
+    /**
      * 删除商家
      * @param businessId 商家编号
      * @return 删除是否成功

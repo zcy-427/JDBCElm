@@ -78,8 +78,19 @@ public class AdminView {
      */
     private void searchBusinesses() {
         ConsolePrinter.printTitle("搜索商家");
-        String nameKeyword = ConsoleInput.readLine("请输入商家名称关键词（可直接回车跳过）：");
-        String addressKeyword = ConsoleInput.readLine("请输入商家地址关键词（可直接回车跳过）：");
+        printCancelTip();
+
+        String nameKeyword = ConsoleInput.readLineOrCancel("请输入商家名称关键词（可直接回车跳过）：");
+        if (nameKeyword == null) {
+            cancelOperation("搜索商家");
+            return;
+        }
+
+        String addressKeyword = ConsoleInput.readLineOrCancel("请输入商家地址关键词（可直接回车跳过）：");
+        if (addressKeyword == null) {
+            cancelOperation("搜索商家");
+            return;
+        }
 
         List<Business> businesses = adminService.searchBusinesses(nameKeyword, addressKeyword);
         ConsolePrinter.printBusinessList(businesses);
@@ -91,14 +102,51 @@ public class AdminView {
      */
     private void addBusiness() {
         ConsolePrinter.printTitle("新建商家");
-        String businessName = ConsoleInput.readRequiredString("请输入商家名称：");
-        String businessAddress = ConsoleInput.readRequiredString("请输入商家地址：");
-        String businessExplain = ConsoleInput.readLine("请输入商家介绍：");
-        BigDecimal starPrice = ConsoleInput.readBigDecimal("请输入起送费：");
-        BigDecimal deliveryPrice = ConsoleInput.readBigDecimal("请输入配送费：");
-        String password = ConsoleInput.readLine("请输入初始密码（直接回车默认 123456）：");
+        printCancelTip();
+
+        String businessName = ConsoleInput.readRequiredStringOrCancel("请输入商家名称：");
+        if (businessName == null) {
+            cancelOperation("新建商家");
+            return;
+        }
+
+        String businessAddress = ConsoleInput.readRequiredStringOrCancel("请输入商家地址：");
+        if (businessAddress == null) {
+            cancelOperation("新建商家");
+            return;
+        }
+
+        String businessExplain = ConsoleInput.readLineOrCancel("请输入商家介绍：");
+        if (businessExplain == null) {
+            cancelOperation("新建商家");
+            return;
+        }
+
+        BigDecimal starPrice = ConsoleInput.readBigDecimalOrCancel("请输入起送费：");
+        if (starPrice == null) {
+            cancelOperation("新建商家");
+            return;
+        }
+
+        BigDecimal deliveryPrice = ConsoleInput.readBigDecimalOrCancel("请输入配送费：");
+        if (deliveryPrice == null) {
+            cancelOperation("新建商家");
+            return;
+        }
+
+        String password = ConsoleInput.readLineOrCancel("请输入初始密码（直接回车默认 123456）：");
+        if (password == null) {
+            cancelOperation("新建商家");
+            return;
+        }
         if (password.isEmpty()) {
             password = "123456";
+        }
+
+        Boolean confirmed = ConsoleInput.readYesNoOrCancel("确认新建该商家吗？（y/n，q取消）：");
+        if (!Boolean.TRUE.equals(confirmed)) {
+            cancelOperation("新建商家");
+            return;
         }
 
         Business business = new Business();
@@ -123,11 +171,25 @@ public class AdminView {
      */
     private void deleteBusiness() {
         ConsolePrinter.printTitle("删除商家");
-        int businessId = ConsoleInput.readPositiveInt("请输入要删除的商家编号：");
-        boolean confirmed = ConsoleInput.readYesNo("确认删除该商家吗？删除后不可恢复（y/n）：");
-        if (!confirmed) {
-            ConsolePrinter.printMessage("已取消删除。");
+        printCancelTip();
+
+        Integer businessId = ConsoleInput.readPositiveIntOrCancel("请输入要删除的商家编号：");
+        if (businessId == null) {
+            cancelOperation("删除商家");
+            return;
+        }
+
+        Business business = adminService.getBusinessById(businessId);
+        if (business == null) {
+            ConsolePrinter.printError("该商家不存在，无法删除。");
             ConsoleInput.pause();
+            return;
+        }
+
+        System.out.println("即将删除商家：" + business.getBusinessName());
+        Boolean confirmed = ConsoleInput.readYesNoOrCancel("确认删除该商家吗？删除后不可恢复（y/n，q取消）：");
+        if (!Boolean.TRUE.equals(confirmed)) {
+            cancelOperation("删除商家");
             return;
         }
 
@@ -137,6 +199,22 @@ public class AdminView {
         } else {
             ConsolePrinter.printError("删除失败，商家不存在或 Service 尚未实现。");
         }
+        ConsoleInput.pause();
+    }
+
+    /**
+     * 打印取消操作提示
+     */
+    private void printCancelTip() {
+        System.out.println("提示：输入 q 可取消当前操作。");
+    }
+
+    /**
+     * 取消操作并暂停
+     * @param operation 操作名称
+     */
+    private void cancelOperation(String operation) {
+        ConsolePrinter.printMessage("已取消" + operation + "。");
         ConsoleInput.pause();
     }
 }

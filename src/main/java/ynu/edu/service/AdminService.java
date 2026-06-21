@@ -35,6 +35,13 @@ public interface AdminService {
     Integer addBusiness(Business business);
 
     /**
+     * 根据商家编号查询商家信息
+     * @param businessId 商家编号
+     * @return 商家信息
+     */
+    Business getBusinessById(Integer businessId);
+
+    /**
      * 删除商家
      * @param businessId 商家编号
      * @return 删除是否成功
